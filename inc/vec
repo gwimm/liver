@@ -1,0 +1,51 @@
+#ifndef   VEC
+#define   VEC
+
+#include <buf>
+
+struct vec {
+  const size_t siz;
+  size_t len;
+  // size_t alloc;
+  char buf[];
+};
+
+void* vec_to_fp(struct vec*);
+struct vec* fp_to_vec(void*);
+
+// vector prototypes //
+
+struct vec* vec_new(size_t);
+void vec_del(struct vec*);
+
+bool vec_is_empty(struct vec*);
+bool vec_is_nulled(struct vec*);
+
+size_t vec_siz(struct vec*);
+size_t vec_len(struct vec*);
+
+struct vec* vec_set_len(struct vec*, size_t);
+struct vec* vec_ensure_len(struct vec*, size_t);
+
+void* vec_at(struct vec*, size_t);
+
+struct vec* vec_push(struct vec*, void*);
+struct vec* vec_pop(struct vec*, void*);
+
+// fat pointer prototypes //
+
+void* fp_vec_new(size_t);
+void fp_vec_del(void*);
+
+size_t fp_vec_siz(void*);
+size_t fp_vec_len(void*);
+
+void* fp_vec_set_len(void*, size_t);
+void* fp_vec_ensure_len(void*, size_t);
+
+void* fp_vec_at(void*, size_t);
+
+void* fp_vec_push(void*, void*);
+void* fp_vec_pop(void*, void*);
+
+#endif // VEC // vim:ft=c:ts=2:sw=2:sts=2:et

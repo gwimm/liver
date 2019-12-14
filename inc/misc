@@ -1,0 +1,24 @@
+#ifndef   MISC
+#define   MISC
+
+#include <stdbool.h>
+#include <stddef.h>
+#include <unistd.h>
+#include <stdio.h>
+
+int max(int, int);
+int min(int, int);
+
+typedef int (*cmp_fun_t)(void *, void *);
+enum cmp {
+  cmp_lt = -1,
+  cmp_eq = 0,
+  cmp_gt = 1
+};
+
+int int_cmp(void *op1, void *op2);
+enum cmp cmp(int op1, int op2);
+
+bool arr_is_nulled(char* arr, size_t len);
+
+#endif // MISC // vim:ft=c:ts=2:sw=2:sts=2:et

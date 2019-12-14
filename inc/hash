@@ -1,0 +1,16 @@
+#ifndef   HASH
+#define   HASH
+
+#include <stdint.h>
+
+#define DECL_PROT_HASH(name, type)              \
+type hash_##name##_init(void);                  \
+type hash_##name##_write(type, uint8_t);        \
+type hash_##name##_final(type);                 \
+type hash_##name (const uint8_t*, size_t);      \
+
+DECL_PROT_HASH(fnv, uint32_t)
+DECL_PROT_HASH(oat, uint32_t)
+
+
+#endif // HASH // vim:ft=c:ts=2:sw=2:sts=2:et

@@ -1,0 +1,22 @@
+#ifndef   AVL
+#define   AVL
+
+struct avl {
+  struct node* root;
+  const cmp_fun_t cmp_fun;
+};
+
+// initialization
+struct avl* avl_init(struct avl* avl, cmp_fun_t cmp_fun);
+struct avl* avl_deinit(struct avl* avl);
+
+struct avl* avl_insert(struct avl* avl, void* val);
+void* avl_query(struct avl* avl, void* val);
+
+size_t avl_height(struct avl* avl);
+
+// draw
+void avl_fdraw(struct avl* avl, FILE* out);
+void avl_draw(struct avl* avl);
+
+#endif // AVL // vim:ft=c:ts=2:sw=2:sts=2:et

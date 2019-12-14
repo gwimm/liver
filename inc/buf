@@ -1,0 +1,37 @@
+#ifndef   DBUF
+#define   DBUF
+
+typedef char* dbuf;
+
+struct buf {
+  size_t len;
+  char buf[];
+};
+
+struct buf* buf_new(void);
+struct buf* buf_del(struct buf*);
+
+ssize_t buf_len(struct buf*);
+
+bool buf_is_nulled(struct buf*);
+
+struct buf* buf_set_len(struct buf*, size_t);
+struct buf* buf_ensure_len(struct buf*, size_t);
+
+
+dbuf buf_to_dbuf(struct buf*);
+struct buf* dbuf_to_buf(dbuf);
+
+
+dbuf dbuf_new();
+void dbuf_del(dbuf);
+
+bool dbuf_is_nulled(dbuf);
+
+// length
+ssize_t dbuf_len(dbuf);
+
+dbuf dbuf_set_len(dbuf, size_t);
+dbuf dbuf_ensure_len(dbuf, size_t);
+
+#endif // DBUF // vim:ft=c:ts=2:sw=2:sts=2:et

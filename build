@@ -1,0 +1,43 @@
+#!/bin/bash
+
+shopt -s nullglob 
+
+: ${CC:=clang}
+
+CC_OPTS="-std=c11 -I inc -include inc/misc"
+
+location() {
+	echo "$1"
+	mkdir -p "${1%/*}"
+}
+
+compile() {
+	loc="${2%.*}"
+	loc="$1/${loc##*/}.o"
+	$CC $CC_OPTS -c $2 -o "$(location $loc)"
+	echo $loc
+}
+
+build() {
+	for f in "${1}"/*.c; { echo " $(compile $2 $f)"; }
+}
+
+build_lib() {
+	ar rvs "${1}/lib.a" $(build 'src' "${1}/obj") > /dev/null
+	echo "${1}/lib.a"
+}
+
+build_bin() {
+	$CC $CC_OPTS tmp/main.c $(build_lib 'bin') -o "$(location bin/main)"
+	echo "bin/main"
+}
+
+ini() {
+	case "$1" in
+	all|"") build_bin 'bin';;
+	run) 	$($0);;
+	clean)  rm -r bin;;
+	esac
+}
+
+ini $1

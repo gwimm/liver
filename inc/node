@@ -1,0 +1,56 @@
+
+#ifndef   NODE
+#define   NODE
+
+typedef int (*cmp_fun_t)(void *, void *);
+
+struct node {
+  union {
+    struct node* conn[3];
+    struct {
+      struct node* prev;
+      union {
+        struct node* next[2];
+        struct {
+          struct node* lt;
+          struct node* gt;
+        };
+      };
+    };
+  };
+  void* value;
+};
+
+struct node* node_init(struct node* node, struct node* prev, void* value);
+struct node* node_deinit(struct node* node);
+
+struct node* node_insert(struct node* node, cmp_fun_t cmp_fun, void* value);
+struct node* node_query(struct node* node, cmp_fun_t cmp_fun, void* value);
+
+bool node_is_root(struct node* node);
+bool node_is_edge(struct node* node);
+bool node_is_leaf(struct node* node);
+
+struct node* node_root(struct node* node);
+
+struct node* node_succ(struct node* node);
+struct node* node_pred(struct node* node);
+
+size_t node_depth(struct node* node);
+size_t node_height(struct node* node);
+ssize_t node_balance_factor(struct node* node);
+
+void* node_remove(struct node* node);
+void node_dispose(struct node* node);
+
+struct node* node_rotate_ll(struct node* node);
+struct node* node_rotate_rl(struct node* node);
+struct node* node_rotate_lr(struct node* node);
+struct node* node_rotate_rr(struct node* node);
+
+struct node* node_balance(struct node* node);
+struct node* node_all_balance(struct node* node);
+
+void node_draw(struct node* node, FILE* out);
+
+#endif // NODE // vim:ft=c:ts=2:sw=2:sts=2:et

@@ -1,0 +1,123 @@
+#ifndef   PPC
+#define   PPC
+
+#define PPC_CONSUME(...)
+#define PPC_BLANK
+
+#define PPC_DEFER(x) x PPC_BLANK
+
+#define PPC_ARGS_REST(x, ...) __VA_ARGS__
+#define PPC_ARGS_1ST(x, ...) x
+#define PPC_ARGS_2ND(x, y, ...) y
+
+#define PPC_UNPAREN(x) PPC_UNPAREN_ x
+#define PPC_UNPAREN_(...) __VA_ARGS__
+
+#define PPC_LIST_2ND(xs) PPC_DEFER(PPC_LIST_2ND_)(PPC_UNPAREN(xs))
+#define PPC_LIST_2ND_(x, y, ...) y
+
+//
+//  
+//
+
+#define PPC_END (((())))
+
+#define PPC_IF_END(x, then, else) \
+  PPC_LIST_2ND((PPC_COMMA_IF_END(x) then, else))
+
+#define PPC_COMMA_IF_END(x) PPC_COMMA_IF_END_4_0(x)
+
+#define PPC_COMMA_IF_END_4_0(...)    PPC_COMMA_IF_END_4_1(__VA_ARGS__, 0)
+#define PPC_COMMA_IF_END_4_1(x, ...) PPC_COMMA_IF_END_3_0 x
+#define PPC_COMMA_IF_END_3_0(...)    PPC_COMMA_IF_END_3_1(__VA_ARGS__, 0)
+#define PPC_COMMA_IF_END_3_1(x, ...) PPC_COMMA_IF_END_2_0 x
+#define PPC_COMMA_IF_END_2_0(...)    PPC_COMMA_IF_END_2_1(__VA_ARGS__, 0)
+#define PPC_COMMA_IF_END_2_1(x, ...) PPC_COMMA_IF_END_1_0 x
+#define PPC_COMMA_IF_END_1_0(...)    PPC_COMMA_IF_END_1_1(__VA_ARGS__, 0)
+#define PPC_COMMA_IF_END_1_1(x, ...) PPC_COMMA_IF_END_0_0 x
+#define PPC_COMMA_IF_END_0_0(...)    PPC_COMMA_IF_END_0_1(__VA_ARGS__, 0)
+#define PPC_COMMA_IF_END_0_1(x, ...) x,
+
+//                              == foldl ==
+//  === haskell
+//
+//    foldl f acc []     = acc
+//    foldl f acc (x:xs) =
+//      let acc' = acc `f` x
+//      in foldl f acc' xs
+//
+//    foldl f z [a, b, c, d] =
+//      f(f(f(f(z, a), b), c), d)
+//
+//  ===
+//
+
+#define PPC_FOLDL(f, acc, ...) \
+  PPC_EVAL(PPC_FOLDL_0(f, acc, __VA_ARGS__, PPC_END, 0))
+
+#define PPC_FOLDL_0(f, acc, head, next, ...) \
+  PPC_DEFER(PPC_IF_END(next, PPC_ARGS_2ND, PPC_FOLDL_1)) \
+    (f, f(acc, head), next, __VA_ARGS__)
+
+#define PPC_FOLDL_1(...) \
+  PPC_DEFER(PPC_FOLDL_0)(__VA_ARGS__)
+
+//                              == foldr ==
+//  == haskell
+//
+//    foldr f acc []     = acc
+//    foldr f acc (x:xs) = x `f` foldr f acc xs
+//
+//    foldr f acc [a, b, c, d] =
+//      f(a, f(b, f(c, f(d, acc))))
+//
+//  ==
+//
+
+#define PPC_FOLDR(f, acc, ...) \
+  PPC_EVAL(PPC_FOLDR_0(f, acc, head, next))
+
+#define PPC_FOLDR_0(f, acc, head, next, ...) \
+  f(head, \
+    PPC_DEFER(PPC_IF_END(next, acc PPC_CONSUME, PPC_FOLDR_1)) \
+      (f, acc, next, __VA_ARGS__))
+
+#define PPC_FOLDR_1(...) \
+  PPC_DEFER(PPC_FOLDR_0)(__VA_ARGS__)
+
+//                              == map ==
+// 
+//  == haskell
+//   
+//    map f xs = [f x | x <- xs]
+//
+//  ==
+//
+
+#define PPC_MAP(f, sep, ...) \
+  PPC_EVAL(PPC_MAP_0(f, sep, __VA_ARGS__, PPC_END, 0))
+
+#define PPC_MAP_0(f, sep, head, next, ...) \
+  f(head) \
+  PPC_DEFER(PPC_IF_END(next, PPC_CONSUME, MAP_1)) \
+    (f, sep, next, __VA_ARGS__)
+
+#define PPC_MAP_1(f, sep, next, ...) \
+  sep(next) \
+  PPC_DEFER(PPC_MAP_0)(f, sep, next, __VA_ARGS__)
+
+// 
+//  evaluation loop enabling a recursion depth of 256.
+//
+
+#define PPC_EVAL(...)     PPC_EVAL_255(__VA_ARGS__)
+#define PPC_EVAL_1(...)    __VA_ARGS__
+#define PPC_EVAL_3(...)    PPC_EVAL_1(PPC_EVAL_1(__VA_ARGS__))
+#define PPC_EVAL_7(...)    PPC_EVAL_3(PPC_EVAL_3(__VA_ARGS__))
+#define PPC_EVAL_15(...)   PPC_EVAL_7(PPC_EVAL_7(__VA_ARGS__))
+#define PPC_EVAL_31(...)   PPC_EVAL_15(PPC_EVAL_15(__VA_ARGS__))
+#define PPC_EVAL_63(...)   PPC_EVAL_31(PPC_EVAL_31(__VA_ARGS__))
+#define PPC_EVAL_127(...)  PPC_EVAL_63(PPC_EVAL_63(__VA_ARGS__))
+#define PPC_EVAL_255(...)  PPC_EVAL_127(PPC_EVAL_127(__VA_ARGS__))
+
+#endif // PPC // vim:ft=c:ts=2:sw=2:sts=2:et

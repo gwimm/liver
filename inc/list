@@ -1,0 +1,13 @@
+#ifndef   LIST
+#define   LIST
+
+struct list* list_init(struct list* list);
+struct list* list_deinit(struct list* list);
+struct list* list_dispose(struct list* list);
+
+struct list* list_incr(struct list* list, size_t i);
+struct list* list_insert(struct list* list, struct list* next);
+struct list* list_head_push(struct list* list);
+
+
+#endif // LIST // vim:ft=c:ts=2:sw=2:sts=2:et

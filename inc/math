@@ -1,0 +1,26 @@
+#ifndef   MATH
+#define   MATH
+
+#include <ppc>
+#include <stdint.h>
+
+#define max_0(a, b) (a > b ? a : b)
+#define max(...) PPC_FOLDL(max_0, __VA_ARGS__)
+
+#define min_0(a, b) (a < b ? a : b)
+#define min(...) PPC_FOLDL(min_0, __VA_ARGS__)
+
+#define arr_at(arr, len, idx) (idx < len ? arr[idx] : 0)
+
+typedef uint8_t  u8;
+typedef uint64_t u64;
+
+u64 u64_powmod(u64 a, u64 b, u64 n);
+
+u8 u8_log2(u8 n);
+
+u8* buf_add(u8*, size_t, const u8*, size_t, const u8*, size_t);
+u8* buf_sub(u8*, size_t, const u8*, size_t, const u8*, size_t);
+u8* buf_mul(u8*, size_t, const u8*, size_t, const u8*, size_t);
+
+#endif // MATH // vim:ft=c:ts=2:sw=2:sts=2:et
